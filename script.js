@@ -1,4 +1,3 @@
-
 /* Adaptive Quiz System - script.js */
 (function () {
     "use strict";
@@ -9,6 +8,7 @@
     var MAX_HISTORY = 8;
     var LEVEL_NAME = {1: "Dễ", 2: "Trung bình", 3: "Khó"};
     var KEYS = ["A", "B", "C", "D"];
+    var abilityChartInstance = null; // Quản lý instance biểu đồ Chart.js
 
     function $(id) {
         return document.getElementById(id);
@@ -182,18 +182,22 @@
     var session = null;
     var timerId = null;
 
-    function buildPool(topic) {
+function buildPool(topic, startLevel) {
         var keys = topic === "mix" ? Object.keys(QUESTION_BANK) : [topic];
         var pool = [];
+        
         keys.forEach(function (key) {
-            var seen = {1: 0, 2: 0, 3: 0};
             QUESTION_BANK[key].forEach(function (item) {
-                var offset = (seen[item.lv] - 1) * 0.2;
-                seen[item.lv] += 1;
+                // Nếu người dùng chọn cố định mức Dễ (easy), Trung bình (medium), Khó (hard)
+                // Hệ thống sẽ lọc ĐÚNG mức đó, không lấy các mức khác
+                if (startLevel === "easy" && item.lv !== 1) return;
+                if (startLevel === "medium" && item.lv !== 2) return;
+                if (startLevel === "hard" && item.lv !== 3) return;
+
                 pool.push({
                     topic: key,
                     lv: item.lv,
-                    b: (item.lv - 2) * 1.2 + offset,
+                    b: (item.lv - 2) * 1.2,
                     q: item.q,
                     o: item.o,
                     a: item.a,
@@ -272,17 +276,26 @@
         el.classList.add("animate__animated", effect);
     }
 
-    function startSession(config) {
+function startSession(config) {
         stopTimer();
         session = {
             config: config,
-            pool: buildPool(config.topic),
+            // Truyền config.start vào để buildPool biết người dùng đang chọn mức nào (auto/easy/medium/hard)
+            pool: buildPool(config.topic, config.start), 
             theta: START_THETA[config.start],
             log: [],
             current: null,
             answered: false
         };
         session.total = Math.min(config.total, session.pool.length);
+        
+        // Cảnh báo nếu không tìm thấy câu hỏi
+        if (session.total === 0) {
+            alert("Chủ đề hoặc mức độ này hiện chưa có đủ câu hỏi!");
+            showView("idle");
+            return;
+        }
+
         $("q-progress").max = session.total;
         showView("quiz");
         nextQuestion();
@@ -430,7 +443,53 @@
         }
     }
 
-    /* ---------- 6. KẾT QUẢ & LỊCH SỬ ---------- */
+    /* ---------- 6. BIỂU ĐỒ  ---------- */
+    function renderAbilityChart(logData) {
+        var ctx = $("abilityChart");
+        if (!ctx) return;
+        
+        if (abilityChartInstance) {
+            abilityChartInstance.destroy();
+        }
+
+        abilityChartInstance = new Chart(ctx.getContext("2d"), {
+            type: "line",
+            data: {
+                labels: logData.map(function(_, index) { return "Câu " + (index + 1); }),
+                datasets: [{
+                    label: "Mức độ câu hỏi đã trải qua",
+                    data: logData.map(function(item) { return item.lv; }),
+                    borderColor: "#4f46e5",
+                    backgroundColor: "rgba(79, 70, 229, 0.1)",
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: "#4f46e5"
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 4,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                if (value === 1) return "Dễ";
+                                if (value === 2) return "TB";
+                                if (value === 3) return "Khó";
+                                return "";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+    /* ---------- 7. KẾT QUẢ & LỊCH SỬ ---------- */
     function finish() {
         var correctCount = session.log.filter(function (x) {
             return x.correct;
@@ -475,6 +534,9 @@
             col.appendChild(lbl);
             path.appendChild(col);
         });
+
+        // Tự động gọi hàm vẽ biểu đồ đường khi hoàn thành
+        renderAbilityChart(session.log);
 
         if (session.config.save) {
             var list = store(HISTORY_KEY) || [];
