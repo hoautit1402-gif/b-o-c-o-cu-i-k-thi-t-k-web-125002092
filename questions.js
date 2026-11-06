@@ -1,4 +1,4 @@
-/* Ngân hàng câu hỏi mở rộng - Mỗi mức độ (Dễ, Trung bình, Khó) đều có từ 9 câu trở lên để phục vụ việc chọn đủ số lượng */
+/* Ngân hàng câu hỏi mở rộng - Mỗi chủ đề có 27 câu (9 Dễ, 9 Trung bình, 9 Khó) */
 const TOPICS = {
   toan: "Toán học cơ bản",
   code: "Lập trình & Web",

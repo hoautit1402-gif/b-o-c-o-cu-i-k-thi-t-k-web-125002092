@@ -6,7 +6,7 @@
     var HISTORY_KEY = "aq-history";
     var SECONDS_PER_QUESTION = 30;
     var MAX_HISTORY = 8;
-    var LEVEL_NAME = {1: "Dễ", 2: "Trung bình", 3: "Khó"};
+    var LEVEL_NAME = { 1: "Dễ", 2: "Trung bình", 3: "Khó" };
     var KEYS = ["A", "B", "C", "D"];
     var abilityChartInstance = null; // Quản lý instance biểu đồ Chart.js
 
@@ -99,7 +99,7 @@
                     });
                 }
             });
-        }, {rootMargin: "-45% 0px -50% 0px"});
+        }, { rootMargin: "-45% 0px -50% 0px" });
         watched.forEach(function (id) {
             var el = $(id);
             if (el) {
@@ -115,8 +115,8 @@
         btn.addEventListener("click", function () {
             form.elements.topic.value = btn.getAttribute("data-topic");
             showError("topic", "");
-            $("lam-bai").scrollIntoView({behavior: "smooth", block: "start"});
-            form.elements.fullname.focus({preventScroll: true});
+            $("lam-bai").scrollIntoView({ behavior: "smooth", block: "start" });
+            form.elements.fullname.focus({ preventScroll: true });
         });
     });
 
@@ -178,14 +178,14 @@
     });
 
     /* ---------- 3. THUẬT TOÁN THÍCH ỨNG ---------- */
-    var START_THETA = {auto: 0, easy: -1.2, medium: 0, hard: 1.2};
+    var START_THETA = { auto: 0, easy: -1.2, medium: 0, hard: 1.2 };
     var session = null;
     var timerId = null;
 
-function buildPool(topic, startLevel) {
+    function buildPool(topic, startLevel) {
         var keys = topic === "mix" ? Object.keys(QUESTION_BANK) : [topic];
         var pool = [];
-        
+
         keys.forEach(function (key) {
             QUESTION_BANK[key].forEach(function (item) {
                 // Nếu người dùng chọn cố định mức Dễ (easy), Trung bình (medium), Khó (hard)
@@ -276,19 +276,19 @@ function buildPool(topic, startLevel) {
         el.classList.add("animate__animated", effect);
     }
 
-function startSession(config) {
+    function startSession(config) {
         stopTimer();
         session = {
             config: config,
             // Truyền config.start vào để buildPool biết người dùng đang chọn mức nào (auto/easy/medium/hard)
-            pool: buildPool(config.topic, config.start), 
+            pool: buildPool(config.topic, config.start),
             theta: START_THETA[config.start],
             log: [],
             current: null,
             answered: false
         };
         session.total = Math.min(config.total, session.pool.length);
-        
+
         // Cảnh báo nếu không tìm thấy câu hỏi
         if (session.total === 0) {
             alert("Chủ đề hoặc mức độ này hiện chưa có đủ câu hỏi!");
@@ -299,13 +299,13 @@ function startSession(config) {
         $("q-progress").max = session.total;
         showView("quiz");
         nextQuestion();
-        $("stage").scrollIntoView({behavior: "smooth", block: "start"});
+        $("stage").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function nextQuestion() {
         var q = pickQuestion();
         var order = shuffle([0, 1, 2, 3]);
-        session.current = {question: q, order: order, correctPos: order.indexOf(q.a)};
+        session.current = { question: q, order: order, correctPos: order.indexOf(q.a) };
         session.answered = false;
 
         $("q-count").textContent = "Câu " + (session.log.length + 1) + "/" + session.total;
@@ -384,10 +384,10 @@ function startSession(config) {
         }
 
         updateAbility(q, correct);
-        session.log.push({lv: q.lv, correct: correct});
+        session.log.push({ lv: q.lv, correct: correct });
         $("q-progress").value = session.log.length;
         nextBtn.disabled = false;
-        nextBtn.focus({preventScroll: true});
+        nextBtn.focus({ preventScroll: true });
     }
 
     nextBtn.addEventListener("click", function () {
@@ -447,7 +447,7 @@ function startSession(config) {
     function renderAbilityChart(logData) {
         var ctx = $("abilityChart");
         if (!ctx) return;
-        
+
         if (abilityChartInstance) {
             abilityChartInstance.destroy();
         }
@@ -455,10 +455,10 @@ function startSession(config) {
         abilityChartInstance = new Chart(ctx.getContext("2d"), {
             type: "line",
             data: {
-                labels: logData.map(function(_, index) { return "Câu " + (index + 1); }),
+                labels: logData.map(function (_, index) { return "Câu " + (index + 1); }),
                 datasets: [{
                     label: "Mức độ câu hỏi đã trải qua",
-                    data: logData.map(function(item) { return item.lv; }),
+                    data: logData.map(function (item) { return item.lv; }),
                     borderColor: "#4f46e5",
                     backgroundColor: "rgba(79, 70, 229, 0.1)",
                     fill: true,
@@ -475,7 +475,7 @@ function startSession(config) {
                         max: 4,
                         ticks: {
                             stepSize: 1,
-                            callback: function(value) {
+                            callback: function (value) {
                                 if (value === 1) return "Dễ";
                                 if (value === 2) return "TB";
                                 if (value === 3) return "Khó";
@@ -503,9 +503,9 @@ function startSession(config) {
         $("res-level").textContent = label;
 
         var badges = {
-            "Nâng cao": {src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcm9sZT0iaW1nIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZGUwNDciLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDk3NzA2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cG9seWdvbiBwb2ludHM9IjUyLDEwMCA0MCwxNTIgNjIsMTQyIDcyLDE1NiA4NCwxMDQiIGZpbGw9IiNiNDUzMDkiLz4KICA8cG9seWdvbiBwb2ludHM9IjEwOCwxMDAgMTIwLDE1MiA5OCwxNDIgODgsMTU2IDc2LDEwNCIgZmlsbD0iI2I0NTMwOSIgb3BhY2l0eT0iMC44NSIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iNzAiIHI9IjU2IiBmaWxsPSJ1cmwoI20pIi8+CiAgPGNpcmNsZSBjeD0iODAiIGN5PSI7MCIgcj0iNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0IiBvcGFjaXR5PSIwLjY1Ii8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDM0LjAgODcuMSw1Mi4zIDEwNi42LDUzLjMgOTEuNCw2NS43IDk2LjUsODQuNyA4MC4wLDc0LjAgNjMuNSw4NC43IDY4LjYsNjUuNyA1My40LDUzLjMgNzIuOSw1Mi4zIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI1MC4wLDExMS4wIDUyLjQsMTE2LjggNTguNiwxMTcuMiA1My44LDEyMS4yIDU1LjMsMTI3LjMgNTAuMCwxMjQuMCA0NC43LDEyNy4zIDQ2LjIsMTIxLjIgNDEuNCwxMTcuMiA0Ny42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+PHBvbHlnb24gcG9pbnRzPSI4MC4wLDExMS4wIDgyLjQsMTE2LjggODguNiwxMTcuMiA4My44LDEyMS4yIDg1LjMsMTI3LjMgODAuMCwxMjQuMCA3NC43LDEyNy4zIDc2LjIsMTIxLjIgNzEuNCwxMTcuMiA3Ny42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+PHBvbHlnb24gcG9pbnRzPSIxMTAuMCwxMTEuMCAxMTIuNCwxMTYuOCAxMTguNiwxMTcuMiAxMTMuOCwxMjEuMiAxMTUuMywxMjcuMyAxMTAuMCwxMjQuMCAxMDQuNywxMjcuMyAxMDYuMiwxMjEuMiAxMDEuNCwxMTcuMiAxMDcuNiwxMTYuOCIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4K", alt: "Huy hiệu ba sao cho xếp loại Nâng cao"},
-            "Trung bình": {src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcm9sZT0iaW1nIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNlMmU4ZjAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNjQ3NDhiIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cG9seWdvbiBwb2ludHM9IjUyLDEwMCA0MCwxNTIgNjIsMTQyIDcyLDE1NiA4NCwxMDQiIGZpbGw9IiM0NzU1NjkiLz4KICA8cG9seWdvbiBwb2ludHM9IjEwOCwxMDAgMTIwLDE1MiA5OCwxNDIgODgsMTU2IDc2LDEwNCIgZmlsbD0iIzQ3NTU2OSIgb3BhY2l0eT0iMC44NSIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iNzAiIHI9IjU2IiBmaWxsPSJ1cmwoI20pIi8+CiAgPGNpcmNsZSBjeD0iODAiIGN5PSI3MCIgcj0iNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI4IiBvcGFjaXR5PSIwLjY1Ii8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDM0LjAgODcuMSw1Mi4zIDEwNi42LDUzLjMgOTEuNCw2NS43IDk2LjUsODQuNyA4MC4wLDc0LjAgNjMuNSw4NC43IDY4LjYsNjUuNyA1My40LDUzLjMgNzIuOSw1Mi4zIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI2NS4wLDExMS4wIDY3LjQsMTE2LjggNzMuNiwxMTcuMiA2OC44LDEyMS4yIDcwLjMsMTI3LjMgNjUuMCwxMjQuMCA1OS43LDEyNy4zIDYxLjIsMTIxLjIgNTYuNCwxMTcuMiA2Mi42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+PHBvbHlnb24gcG9pbnRzPSI5NS4wLDExMS4wIDk3LjQsMTE2LjggMTAzLjYsMTE3LjIgOTguOCwxMjEuMiAxMDAuMywxMjcuMyA5NS4wLDEyNC4wIDg5LjcsMTI3LjMgOTEuMiwxMjEuMiA4Ni40LDExNy4yIDkyLjYsMTE2LjgiIGZpbGw9IiNmZmZmZmYiLz4KPC9zdmc+Cg==", alt: "Huy hiệu hai sao cho xếp loại Trung bình"},
-            "Cơ bản": {src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcm9sZT0iaW1nIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNlMGEwNzAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYTA1NzJhIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cG9seWdvbiBwb2ludHM9IjUyLDEwMCA0MCwxNTIgNjIsMTQyIDcyLDE1NiA4NCwxMDQiIGZpbGw9IiM3YzNmMWQiLz4KICA8cG9seWdvbiBwb2ludHM9IjEwOCwxMDAgMTIwLDE1MiA5OCwxNDIgODgsMTU2IDc2LDEwNCIgZmlsbD0iIzdjM2YxZCIgb3BhY2l0eT0iMC44NSIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iNzAiIHI9IjU2IiBmaWxsPSJ1cmwoI20pIi8+CiAgPGNpcmNsZSBjeD0iODAiIGN5PSI3MCIgcj0iNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0IiBvcGFjaXR5PSIwLjY1Ii8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDM0LjAgODcuMSw1Mi4zIDEwNi42LDUzLjMgOTEuNCw2NS43IDk2LjUsODQuNyA4MC4wLDc0LjAgNjMuNSw4NC43IDY4LjYsNjUuNyA1My40LDUzLjMgNzIuOSw1Mi4zIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDExMS4wIDgyLjQsMTE2LjggODguNiwxMTcuMiA4My44LDEyMS4yIDg1LjMsMTI3LjMgODAuMCwxMjQuMCA3NC43LDEyNy4zIDc2LjIsMTIxLjIgNzEuNCwxMTcuMiA3Ny42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPgo=", alt: "Huy hiệu một sao cho xếp loại Cơ bản"}
+            "Nâng cao": { src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcm9sZT0iaW1nIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZGUwNDciLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDk3NzA2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cG9seWdvbiBwb2ludHM9IjUyLDEwMCA0MCwxNTIgNjIsMTQyIDcyLDE1NiA4NCwxMDQiIGZpbGw9IiNiNDUzMDkiLz4KICA8cG9seWdvbiBwb2ludHM9IjEwOCwxMDAgMTIwLDE1MiA5OCwxNDIgODgsMTU2IDc2LDEwNCIgZmlsbD0iI2I0NTMwOSIgb3BhY2l0eT0iMC44NSIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iNzAiIHI9IjU2IiBmaWxsPSJ1cmwoI20pIi8+CiAgPGNpcmNsZSBjeD0iODAiIGN5PSI7MCIgcj0iNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0IiBvcGFjaXR5PSIwLjY1Ii8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDM0LjAgODcuMSw1Mi4zIDEwNi42LDUzLjMgOTEuNCw2NS43IDk2LjUsODQuNyA4MC4wLDc0LjAgNjMuNSw4NC43IDY4LjYsNjUuNyA1My40LDUzLjMgNzIuOSw1Mi4zIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI1MC4wLDExMS4wIDUyLjQsMTE2LjggNTguNiwxMTcuMiA1My44LDEyMS4yIDU1LjMsMTI3LjMgNTAuMCwxMjQuMCA0NC43LDEyNy4zIDQ2LjIsMTIxLjIgNDEuNCwxMTcuMiA0Ny42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+PHBvbHlnb24gcG9pbnRzPSI4MC4wLDExMS4wIDgyLjQsMTE2LjggODguNiwxMTcuMiA4My44LDEyMS4yIDg1LjMsMTI3LjMgODAuMCwxMjQuMCA3NC43LDEyNy4zIDc2LjIsMTIxLjIgNzEuNCwxMTcuMiA3Ny42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+PHBvbHlnb24gcG9pbnRzPSIxMTAuMCwxMTEuMCAxMTIuNCwxMTYuOCAxMTguNiwxMTcuMiAxMTMuOCwxMjEuMiAxMTUuMywxMjcuMyAxMTAuMCwxMjQuMCAxMDQuNywxMjcuMyAxMDYuMiwxMjEuMiAxMDEuNCwxMTcuMiAxMDcuNiwxMTYuOCIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4K", alt: "Huy hiệu ba sao cho xếp loại Nâng cao" },
+            "Trung bình": { src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcm9sZT0iaW1nIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNlMmU4ZjAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNjQ3NDhiIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cG9seWdvbiBwb2ludHM9IjUyLDEwMCA0MCwxNTIgNjIsMTQyIDcyLDE1NiA4NCwxMDQiIGZpbGw9IiM0NzU1NjkiLz4KICA8cG9seWdvbiBwb2ludHM9IjEwOCwxMDAgMTIwLDE1MiA5OCwxNDIgODgsMTU2IDc2LDEwNCIgZmlsbD0iIzQ3NTU2OSIgb3BhY2l0eT0iMC44NSIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iNzAiIHI9IjU2IiBmaWxsPSJ1cmwoI20pIi8+CiAgPGNpcmNsZSBjeD0iODAiIGN5PSI3MCIgcj0iNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI4IiBvcGFjaXR5PSIwLjY1Ii8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDM0LjAgODcuMSw1Mi4zIDEwNi42LDUzLjMgOTEuNCw2NS43IDk2LjUsODQuNyA4MC4wLDc0LjAgNjMuNSw4NC43IDY4LjYsNjUuNyA1My40LDUzLjMgNzIuOSw1Mi4zIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI2NS4wLDExMS4wIDY3LjQsMTE2LjggNzMuNiwxMTcuMiA2OC44LDEyMS4yIDcwLjMsMTI3LjMgNjUuMCwxMjQuMCA1OS43LDEyNy4zIDYxLjIsMTIxLjIgNTYuNCwxMTcuMiA2Mi42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+PHBvbHlnb24gcG9pbnRzPSI5NS4wLDExMS4wIDk3LjQsMTE2LjggMTAzLjYsMTE3LjIgOTguOCwxMjEuMiAxMDAuMywxMjcuMyA5NS4wLDEyNC4wIDg5LjcsMTI3LjMgOTEuMiwxMjEuMiA4Ni40LDExNy4yIDkyLjYsMTE2LjgiIGZpbGw9IiNmZmZmZmYiLz4KPC9zdmc+Cg==", alt: "Huy hiệu hai sao cho xếp loại Trung bình" },
+            "Cơ bản": { src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcm9sZT0iaW1nIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNlMGEwNzAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYTA1NzJhIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cG9seWdvbiBwb2ludHM9IjUyLDEwMCA0MCwxNTIgNjIsMTQyIDcyLDE1NiA4NCwxMDQiIGZpbGw9IiM3YzNmMWQiLz4KICA8cG9seWdvbiBwb2ludHM9IjEwOCwxMDAgMTIwLDE1MiA5OCwxNDIgODgsMTU2IDc2LDEwNCIgZmlsbD0iIzdjM2YxZCIgb3BhY2l0eT0iMC44NSIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iNzAiIHI9IjU2IiBmaWxsPSJ1cmwoI20pIi8+CiAgPGNpcmNsZSBjeD0iODAiIGN5PSI3MCIgcj0iNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0IiBvcGFjaXR5PSIwLjY1Ii8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDM0LjAgODcuMSw1Mi4zIDEwNi42LDUzLjMgOTEuNCw2NS43IDk2LjUsODQuNyA4MC4wLDc0LjAgNjMuNSw4NC43IDY4LjYsNjUuNyA1My40LDUzLjMgNzIuOSw1Mi4zIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI4MC4wLDExMS4wIDgyLjQsMTE2LjggODguNiwxMTcuMiA4My44LDEyMS4yIDg1LjMsMTI3LjMgODAuMCwxMjQuMCA3NC43LDEyNy4zIDc2LjIsMTIxLjIgNzEuNCwxMTcuMiA3Ny42LDExNi44IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPgo=", alt: "Huy hiệu một sao cho xếp loại Cơ bản" }
         };
         var badgeImg = $("res-badge");
         badgeImg.src = badges[label].src;
@@ -555,7 +555,7 @@ function startSession(config) {
         showView("result");
         var heading = viewResult.querySelector("h4");
         heading.setAttribute("tabindex", "-1");
-        heading.focus({preventScroll: true});
+        heading.focus({ preventScroll: true });
     }
 
     function renderHistory() {
@@ -580,7 +580,7 @@ function startSession(config) {
             result.textContent = item.score + "/" + item.total + " đúng · " + item.label + " (" + item.ability + ")";
             var date = document.createElement("span");
             date.className = "h-date";
-            date.textContent = new Date(item.time).toLocaleString("vi-VN", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"});
+            date.textContent = new Date(item.time).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
             li.appendChild(title);
             li.appendChild(result);
             li.appendChild(date);
@@ -602,8 +602,8 @@ function startSession(config) {
     $("btn-back").addEventListener("click", function () {
         session = null;
         showView("idle");
-        form.scrollIntoView({behavior: "smooth", block: "start"});
-        form.elements.topic.focus({preventScroll: true});
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+        form.elements.topic.focus({ preventScroll: true });
     });
 
     /* ---------- KHỞI TẠO ---------- */
